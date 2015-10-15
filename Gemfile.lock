@@ -1,0 +1,17 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    aws-sdk-core (2.1.29)
+      jmespath (~> 1.0)
+    jmespath (1.1.3)
+    rack (1.6.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  aws-sdk-core
+  rack
+
+BUNDLED WITH
+   1.10.6

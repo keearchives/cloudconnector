@@ -25,40 +25,40 @@ class Api
 # :
 # Get all instances
   def self.listall(params)
-    print "CloudConnector.listall(params[:id])"
+    puts "CloudConnector.listall(params[:id])"
   end
 
 # Get handle to an instance
   def self.find(params)
-    print "CloudConnector.find(params[:id])"
+    puts "CloudConnector.find(params[:id])"
   end
   
 # Create an instance
   def self.create(params)
-    print "CloudConnector.create!(params[:id])"
+    puts "CloudConnector.create(params[:id])"
   end
   
   def self.remove(params)
-    print "CloudConnector.remove!(params[:id])"
+    puts "CloudConnector.create!(params[:id])"
   end
   
   def self.start(params)
-    print "CloudConnector.start(params[:id])"
+    puts "CloudConnector.start(params[:id])"
   end
 
   def self.stop(params)
-    print "CloudConnector.stop(params[:id])"
+    puts "CloudConnector.stop(params[:id])"
   end
 
 # Test or init a connection to AWS (cloud provider)
   def self.connect(params)
-    print "CloudConnector.connect(params[:id])"
+    puts "CloudConnector.connect(params[:id])"
   end
 
 # cloudfoundation
 # http://docs.aws.amazon.com/sdkforruby/api/Aws/CloudFormation/Client.html
   def self.deploy(params)
-    print "CloudConnector.stack_create(params[:id])"
+    puts "CloudConnector.stack_create(params[:id])"
   end
 
 end

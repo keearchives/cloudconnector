@@ -1,21 +1,31 @@
-== Configure the ec2-keypair ==
+Configure the ec2-keypair
+
 aws configure
-# Workflow to tnw.deploy(stack) where stack=tnw-baseline
+
+
+Workflow to tnw.deploy(stack) where stack=tnw-baseline
+
 cfer converge tnw-baseline --profile default --region us-west-2 --parameters KeyName:id-rsa.pub
+
 aws cloudformation delete-stack --stack-name tnw-baseline
-# Use -t to locate the ruby source file
+
+Use -t to locate the ruby source file
+
 cfer converge tnw-baseline -t tnw-baseline.rb --profile default --region us-west-2 --parameters KeyName:id-rsa.pub
-# Export to native  AWS CloudFormation json format
+
+Export to native  AWS CloudFormation json format
+
 cfer generate tnw-baseline.rb --profile default --region us-west-2 --parameters KeyName:id-rsa.pub
 
-# create  all
+-- create  all
 cfer converge tnw-vpc 		--profile default --region us-west-2 --parameters KeyName:id-rsa.pub
 cfer converge tnw-conductor 	--profile default --region us-west-2 --parameters KeyName:id-rsa.pub
 cfer converge tnw-hipswitch 	--profile default --region us-west-2 --parameters KeyName:id-rsa.pub
 cfer converge tnw-ln 		--profile default --region us-west-2 --parameters KeyName:id-rsa.pub
 cfer converge tnw-splunk 	--profile default --region us-west-2 --parameters KeyName:id-rsa.pub
 cfer converge tnw-baseline 	--profile default --region us-west-2 --parameters KeyName:id-rsa.pub
-# delete all
+
+-- delete all
 aws cloudformation delete-stack --stack-name tnw-baseline
 aws cloudformation delete-stack --stack-name tnw-splunk
 aws cloudformation delete-stack --stack-name tnw-ln

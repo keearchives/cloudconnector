@@ -1,0 +1,260 @@
+---
+swagger: "2.0"
+info:
+  version: "v1"
+  title: "TCC API"
+  description: " A cloud connector API that uses a specification  TODO: refine instance\
+    \ object to CRUD "
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    name: "TCC API Team"
+    email: "foo@example.com"
+    url: "http://example.com"
+  license:
+    name: "MIT"
+    url: "http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT"
+host: "tcc.swagger.io"
+basePath: "/tcc/v1"
+schemes:
+- "http"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /instance/listall/:
+    get:
+      description: "Returns all instances"
+      operationId: "instanceListAll"
+      parameters:
+      - name: "tags"
+        in: "query"
+        description: "tags to filter by"
+        required: false
+        type: "array"
+        collectionFormat: "csv"
+        items:
+          type: "string"
+      - name: "limit"
+        in: "query"
+        description: "maximum number of results to return"
+        required: false
+        type: "integer"
+        format: "int32"
+      responses:
+        200:
+          description: "instance response"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Instance"
+        default:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+  /instance/create/:
+    put:
+      description: "Creates a new instance from an Image.  Duplicates are allowed."
+      operationId: "instanceCreate"
+      parameters:
+      - name: "instance"
+        in: "body"
+        description: "Instance to add to the store"
+        required: true
+        schema:
+          $ref: "#/definitions/NewInstance"
+      responses:
+        200:
+          description: "instance response"
+          schema:
+            $ref: "#/definitions/Instance"
+        default:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+  /instance/{instanceId}/find:
+    get:
+      description: "Returns a instance info based on a single ID"
+      operationId: "find instance by id"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "ID of instance to fetch"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "instance response"
+          schema:
+            $ref: "#/definitions/Instance"
+        default:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+  /instance/{instanceId}/remove:
+    delete:
+      description: "deletes a single instance based on the ID provided"
+      operationId: "deleteInstance"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "ID of instance to delete"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        204:
+          description: "instance deleted"
+        default:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+  /instance/{instanceId}/start:
+    post:
+      description: "Start a single instance based on the ID provided"
+      operationId: "instanceStart"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "ID of instance to start"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        204:
+          description: "instance started"
+        default:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+  /instance/{instanceId}/stop:
+    post:
+      description: "stop a single instance based on the ID provided"
+      operationId: "instanceStop"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "ID of instance to stopped"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        204:
+          description: "instance stopped"
+        default:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+  /instance/{instanceId}/interface/{interfaceId}/attach:
+    post:
+      description: "Attach interface ID to a single instance based on the instance\
+        \ ID provided"
+      operationId: "instanceInterfaceAttach"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "ID of instance"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "interfaceId"
+        in: "path"
+        description: "ID of interface to attach"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        204:
+          description: "instance interface attached"
+        default:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+  /instance/{instanceId}/interface/{interfaceId}/deattach:
+    post:
+      description: "Attach interface ID to a single instance based on the instance\
+        \ ID provided"
+      operationId: "instanceInterfaceDeattach"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "ID of instance"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "interfaceId"
+        in: "path"
+        description: "ID of interface to deattach"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        204:
+          description: "instance interface deattached"
+        default:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+  /connect/:
+    post:
+      description: "attempt to make a connect to test the credentials"
+      operationId: "connectService"
+      responses:
+        204:
+          description: "Service connected successfully"
+        400:
+          description: "Bad Request - Request does not have a valid format, all required\
+            \ parameters, etc."
+        401:
+          description: "Unauthorized Access - No currently valid session available."
+        403:
+          description: "Denied Access - No permission."
+        500:
+          description: "System Error - Specific reason is included in the error message."
+        default:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+  /deploy/:
+    post:
+      description: "Deploy {Heat, CloudFormation} template using the given YAML"
+      operationId: "connect"
+      responses:
+        204:
+          description: "service deployed"
+        default:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+definitions:
+  Instance:
+    type: "object"
+    allOf:
+    - $ref: "#/definitions/NewInstance"
+    - required:
+      - "id"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+  NewInstance:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+      tag:
+        type: "string"
+  Error:
+    type: "object"
+    required:
+    - "code"
+    - "message"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"

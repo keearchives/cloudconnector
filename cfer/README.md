@@ -18,12 +18,14 @@ Export to native  AWS CloudFormation json format
 cfer generate tnw-baseline.rb --profile default --region us-west-2 --parameters KeyName:id-rsa.pub
 
 -- create  all
+...
 cfer converge tnw-vpc 		--profile default --region us-west-2 --parameters KeyName:id-rsa.pub
 cfer converge tnw-conductor 	--profile default --region us-west-2 --parameters KeyName:id-rsa.pub
 cfer converge tnw-hipswitch 	--profile default --region us-west-2 --parameters KeyName:id-rsa.pub
 cfer converge tnw-ln 		--profile default --region us-west-2 --parameters KeyName:id-rsa.pub
 cfer converge tnw-splunk 	--profile default --region us-west-2 --parameters KeyName:id-rsa.pub
 cfer converge tnw-baseline 	--profile default --region us-west-2 --parameters KeyName:id-rsa.pub
+...
 
 -- delete all
 aws cloudformation delete-stack --stack-name tnw-baseline

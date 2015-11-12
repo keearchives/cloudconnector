@@ -5,10 +5,11 @@
 #################################################################
 # dispatch restful calls to enable provider connector  and return
 # json responses
-# require 'cloudconnector'  # Service Provider Instance Wrapper
+#require 'cloudconnector-fog'  # Service Provider Instance Wrapper
 
 class Api
-  # roouters and needed variables to service the rest interface
+  # @cc = CloudConnector.new('AWS', 'us-west-2')
+  # routers and needed variables to service the rest interface
   def self.routes
     [
       { method: 'GET',  		path: %r{^/v1/instance/listall},	api_method: 	:listall	},
@@ -37,6 +38,7 @@ class Api
   def self.listall(_params)
     # make connectors to providers with focus on aws and rackspace
     puts 'CloudConnector.listall(params[:id])'
+#    @cc.cloud_instance_list_all()
   end
 
   # Get handle to an instance
@@ -55,20 +57,24 @@ class Api
 
   def self.start(_params)
     puts 'CloudConnector.start(params[:id])'
+#    @cc.start(params[:id])
   end
 
   def self.stop(_params)
     puts 'CloudConnector.stop(params[:id])'
+#    @cc.stop(params[:id])
   end
 
   # Test or init a connection to AWS (cloud provider)
   def self.connect(_params)
     puts 'CloudConnector.connect(params[:id])'
+#    @cc.cloud_connect(params[:id])
   end
 
   # cloudfoundation interface - there are alot of vpc work to set up an instance: json template and parameter file are inputs
   # http://docs.aws.amazon.com/sdkforruby/api/Aws/CloudFormation/Client.html
   def self.deploy(_params)
     puts 'CloudConnector.stack_create(params[:id])'
+#    @cc.deploy()
   end
 end

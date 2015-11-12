@@ -6,6 +6,7 @@ require 'yaml'
 require 'fog'
 require 'pry'
 require 'json'
+require 'cfer'
 
 #
 # The cloud connector is a software component, which runs as an agent 
@@ -115,20 +116,20 @@ class CloudConnector
    def cloud_instance_create(ami_id='ami-506e8d63', vpc_id, key_name)
       logger.debug "Enter"
       # start a server
-      @server = @connector.servers.create(
-        :image_id=>ami_id,
-        :flavor_id=>'t1.micro',
-        :key_name => key_name
-      )
+      #@server = @connector.servers.create(
+      #  :image_id=>ami_id,
+      #  :flavor_id=>'t1.micro',
+      #  :key_name => key_name
+      #)
 
-      # wait for it to get online
-      @server.wait_for { print "."; ready? }
+      ## wait for it to get online
+      #@server.wait_for { print "."; ready? }
 
       # public address -> ec2-79-125-45-252.eu- west-1.compute.amazonaws.com -> ssh into it
-      logger.info server.dns_name
+      #logger.info server.dns_name
 
       # instance id -> find it again
-      @connector.servers.get(@server.id)
+      #@connector.servers.get(@server.id)
       logger.debug "Exit"
    end
 
@@ -138,33 +139,50 @@ class CloudConnector
 
 # https://github.com/fog/fog-aws/blob/master/lib/fog/aws/requests/compute/create_network_interface.rb
 # https://github.com/fog/fog/commit/de03761f3439001d6bff205888bf535149c201c4
-      Fog.credential = waffles
-      @connector = EC2.servers.bootstrap 
-       (
-          image_id:   AMI_ID,
-          flavor_id:  FLAVOR_ID,
-          private_key_path: '~/.ssh/id_rsa',
-          public_key_path: '~/.ssh/id_rsa.pub',
-          tags:       { Name: TAGGED_NAME },
-          username: ROOT_USER
-      )
-      EC2.delete_key_pair("fog_waffles")
-      @connector.servers.create
-      (
-      :vpc_id             => config[:vpc_id],
-      :subnet_id          => config[:subnet_id],
-      :availability_zone  => config[:availability_zone],
-      :security_group_ids => config[:security_group_ids],
-      :tags               => config[:tags],
-      :flavor_id          => config[:flavor_id],
-      :ebs_optimized      => config[:ebs_optimized],
-      :image_id           => config[:image_id],
-      :key_name           => config[:aws_ssh_key_id]
-      )
+   #   Fog.credential = waffles
+   #   @connector = EC2.servers.bootstrap 
+   #    (
+   #       image_id:   AMI_ID,
+   #       flavor_id:  FLAVOR_ID,
+   #       private_key_path: '~/.ssh/id_rsa',
+   #       public_key_path: '~/.ssh/id_rsa.pub',
+   #       tags:       { Name: TAGGED_NAME },
+   #       username: ROOT_USER
+   #   )
+   #   EC2.delete_key_pair("fog_waffles")
+   #   @connector.servers.create
+   #   (
+   #   :vpc_id             => config[:vpc_id],
+   #   :subnet_id          => config[:subnet_id],
+   #   :availability_zone  => config[:availability_zone],
+   #   :security_group_ids => config[:security_group_ids],
+   #   :tags               => config[:tags],
+   #   :flavor_id          => config[:flavor_id],
+   #   :ebs_optimized      => config[:ebs_optimized],
+   #   :image_id           => config[:image_id],
+   #   :key_name           => config[:aws_ssh_key_id]
+   #   )
    end
    
+   def deploy_native(stack_name)
+      logger.debug "Enter"
+      puts('put ../rscripts/stack-create.rb here')
+      logger.debug "Exit"
+   end
+
+   def deploy_cfer(stack_name)
+      logger.debug "Enter"
+      client = Cfer::Cfn::Client.new(stack_name: 'tnw-baseline')
+      stack = Cfer::stack_from_file('../cfer/tnw-baseline.rb', client: client)
+      client.converge(stack)
+      logger.debug "Exit"
+   end
+
    def deploy(j, y)
       logger.debug "Enter"
+      Cfer.converge! 'tnw-vpc', template: '../cfer/tnw-vpc.rb'
+      Cfer.converge! 'tnw-hipswitch', template: '../cfer/tnw-hipswitch.rb'
+      Cfer.converge! 'tnw-ln', template: '../cfer/tnw-ln.rb'
       logger.debug "Exit"
    end
 end
@@ -175,7 +193,7 @@ if __FILE__ == $0
   cc = CloudConnector.new('AWS', 'us-west-2')
   cc.cloud_connect()
   cc.cloud_instance_list_all()
-  cc.cloud_instance_get('i-04085fc2')
+  cc.cloud_instance_get('i-b917b760')
 end
 
 exit

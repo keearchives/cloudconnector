@@ -1,4 +1,4 @@
-# Configure the ec2-keypair
+== Configure the ec2-keypair ==
 aws configure
 # Workflow to tnw.deploy(stack) where stack=tnw-baseline
 cfer converge tnw-baseline --profile default --region us-west-2 --parameters KeyName:id-rsa.pub
